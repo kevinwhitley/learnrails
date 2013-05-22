@@ -25,7 +25,6 @@ module SessionsHelper
   def current_user=(user)
     @current_user = user
   end
-
   # get the current user, as defined by the session cookie
   def current_user
     @current_user ||= User.find_by_remember_token(cookies[:remember_token])
@@ -33,5 +32,13 @@ module SessionsHelper
 
   def current_user?(user)
     user == current_user
+  end
+
+  # require that the user be signed in, or else redirect to signin page
+  def signed_in_user
+    unless signed_in?
+      store_location
+      redirect_to signin_url, notice: "Please sign in."
+    end
   end
 end
